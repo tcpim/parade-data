@@ -1,10 +1,12 @@
 const express = require("express");
 
-const db = require("./db.js");
+const dbConnections = require("./db.js");
 
 const app = express();
 
 const port = process.env.PORT || 8081;
+const isProd = process.env.environment == 'PROD';
+const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
 app.post("/insert", async (req, res) => {
     await ensureSchema();

@@ -2,6 +2,10 @@ const knex = require('knex');
 
 const knexfile = require('./knexfile');
 
-const configOptions = knexfile['dbConfig'];
+const localConfig = knexfile['development'];
+const prodConfig = knexfile['production'];
 
-module.exports = knex(configOptions);
+module.exports = {
+    prodDBCon: knex(prodConfig),
+    localDBCon: knex(localConfig)
+}
