@@ -1,6 +1,10 @@
 # parade-data
 
-## Start local cloud auth proxy
+###
+Cloud environment variable needs to have:
+- environment: PROD  // for checking prod DB or dev
+
+### Start local cloud auth proxy
 ```
 ./cloud-sql-proxy \
 --credentials-file /Users/timwang/src/parade/cloud-sql-test-377705-b4c77cde2242.json cloud-sql-test-377705:us-central1:quickstart-instance & 
