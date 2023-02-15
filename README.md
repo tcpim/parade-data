@@ -13,3 +13,21 @@ curl -X POST localhost:8081/insert
 
 curl -X POST https://parade-data-lbbl5ziblq-wl.a.run.app/insert
 ```
+
+### Locally test job
+```
+npm start
+```
+
+### Upload to artifact registry
+```
+gcloud builds submit --pack image=LOCATION-docker.pkg.dev/PROJECT_ID/REPO_NAME/IMAGE_NAME
+
+LOCATION with the region name of your container repository. Example: us-west2
+PROJECT_ID with the ID of your Cloud project.
+REPO_NAME with the name of your Docker repository.
+IMAGE_NAME with the name of your container image.
+
+gcloud builds submit --pack image=us-west2-docker.pkg.dev/cloud-sql-test-377705/cloud-sql-test/parade-data-job
+
+```

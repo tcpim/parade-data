@@ -1,29 +1,28 @@
-'use strict';
-
-const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0 } = process.env;
+const express = require("express");
 
 const dbConnections = require("./db.js");
+
+const app = express();
+
+const port = process.env.PORT || 8081;
 const isProd = process.env.environment == 'PROD';
 const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
-// Define main script
-const main = async () => {
-    console.log(
-        `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
-    );
-
+app.post("/insert", async (req, res) => {
     await ensureSchema();
+
     const timestamp = new Date();
     try {
         await db('ts-test').insert({ last_ts: timestamp });
     } catch (err) {
         logger.error(`Error ${err}`);
-        throw err;
+        res
+            .status(500)
+            .send('Unable to insert timestamp')
+            .end();
     }
-
-    console.log(`Completed Task #${CLOUD_RUN_TASK_INDEX}.`);
-    process.exit(0);
-};
+    res.status(200).send(`Successfully inserted ${timestamp}`).end();
+});
 
 const ensureSchema = async () => {
     const hasTable = await db.schema.hasTable('ts-test');
@@ -35,11 +34,6 @@ const ensureSchema = async () => {
     }
 }
 
-// Start script
-main().catch(err => {
-    console.error(err);
-    // [START cloudrun_jobs_exit_process]
-    process.exit(1); // Retry Job Task by exiting the process
-    // [END cloudrun_jobs_exit_process]
-});
-// [END cloudrun_jobs_quickstart]
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`)
+})
