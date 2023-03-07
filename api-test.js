@@ -8,6 +8,9 @@ const port = process.env.PORT || 8081;
 const isProd = process.env.environment == 'PROD';
 const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
+const { getRegistry } = require('./ic-connector.js')
+
+
 app.post("/insert", async (req, res) => {
     await ensureSchema();
 
@@ -23,6 +26,16 @@ app.post("/insert", async (req, res) => {
     }
     res.status(200).send(`Successfully inserted ${timestamp}`).end();
 });
+
+app.get('/registry/:canisterId', async (req, res) => {
+    const registry = await getRegistry(req.params.canisterId)
+    var resJson = []
+    for (tuple of registry) {
+        resJson.push({ index: tuple[0], account: tuple[1] })
+    }
+    res.json({ registry: resJson })
+})
+
 
 const ensureSchema = async () => {
     const hasTable = await db.schema.hasTable('ts-test');
