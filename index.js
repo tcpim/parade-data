@@ -1,7 +1,7 @@
 'use strict';
 
 const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0 } = process.env;
-const { getStats, getMinter, getExtension, getRegistry, getTokens } = require('./ic-connector.js')
+const { getStats, getMinter, getRegistry, getAllNFTs } = require('./ic-connector.js')
 const { Principal } = require('@dfinity/principal');
 const dbConnections = require("./db.js");
 const isProd = process.env.environment == 'PROD';
@@ -9,22 +9,61 @@ const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
 const btcFlowerCanister = 'pk6rk-6aaaa-aaaae-qaazq-cai'
 
+
+const canistersIds = [
+    'pk6rk-6aaaa-aaaae-qaazq-cai',
+    '2tvxo-eqaaa-aaaai-acjla-cai',
+    'ugdkf-taaaa-aaaak-acoia-cai',
+    'skjpp-haaaa-aaaae-qac7q-cai',
+    'ahl3d-xqaaa-aaaaj-qacca-cai',
+    'oeee4-qaaaa-aaaak-qaaeq-cai',
+    'bzsui-sqaaa-aaaah-qce2a-cai',
+    't2mog-myaaa-aaaal-aas7q-cai',
+    'e3izy-jiaaa-aaaah-qacbq-cai',
+    '4ggk4-mqaaa-aaaae-qad6q-cai',
+    'nbg4r-saaaa-aaaah-qap7a-cai',
+    'o6lzt-kiaaa-aaaag-qbdza-cai',
+    '7cpyk-jyaaa-aaaag-qa5na-cai',
+]
+
 // Define main script
 const main = async () => {
-    // console.log(
-    //     `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
-    // );
+    //await populateAllCollections('collection')
+    await populateAllCollectionStats('collection')
 
-    //await ensureSchema();
-    try {
-        //await populateCollectionTable(btcFlowerCanister, 'collection')
-        await populateTokenOwnerTable(btcFlowerCanister, 'collection_token', 'token_ownership')
-    } catch (err) {
-        console.log(`Error ${err}`);
-        throw err;
-    }
+    // if (isProd) {
+    //     console.log(
+    //         `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
+    //     );
 
-    // console.log(`Completed Task #${CLOUD_RUN_TASK_INDEX}.`);
+    //     try {
+    //         const cid = canistersIds[CLOUD_RUN_TASK_INDEX]
+    //         console.log("Start collection table for canister: " + cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+    //         await populateCollectionTable(cid, 'collection')
+    //         console.log("Start token_owner table for canister: " + cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+    //         await populateTokenOwnerTable(cid, 'collection_token', 'token_ownership')
+    //     } catch (err) {
+    //         console.log(`Error ${err}`);
+    //         throw err;
+    //     }
+
+    //     console.log(`Completed Task #${CLOUD_RUN_TASK_INDEX}.`);
+    //     process.exit(0);
+    // } else {
+    //     try {
+    //         for (let cid of canistersIds) {
+    //             console.log("Start collection table for canister: " + cid)
+    //             await populateCollectionTable(cid, 'collection')
+    //             console.log("Start token_owner table for canister: " + cid)
+    //             await populateTokenOwnerTable(cid, 'collection_token', 'token_ownership')
+    //         }
+    //     } catch (err) {
+    //         console.log(`Error ${err}`);
+    //         throw err;
+    //     }
+    //     process.exit(0);
+    // }
+
     process.exit(0);
 };
 
@@ -39,7 +78,7 @@ const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOw
         const smallSizeImageUrl = canisterId == btcFlowerCanister ?
             "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + tokenIdentifier : fullSizeImageUrl + '&type=thumbnail'
 
-        console.log('Updating collection_token table')
+
         await db(collectionTokenTable)
             .insert({
                 canister_id: canisterId,
@@ -50,9 +89,7 @@ const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOw
             })
             .onConflict(['canister_id', 'token_index'])
             .merge()
-        console.log('Done updating collection_token table')
 
-        console.log('Updating token_ownership table')
         await db(tokenOwnershipTable)
             .insert({
                 owner_account: ownerAccount,
@@ -61,28 +98,58 @@ const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOw
             })
             .onConflict(['owner_account', 'canister_id', 'token_index'])
             .merge()
-        console.log('Done updating token_ownership table')
     }
 }
 
-const populateCollectionTable = async (canisterId, tableName) => {
-    const statsRes = await getStats(canisterId)
-    const minterRes = await getMinter(canisterId)
+const populateAllCollections = async (tableName) => {
+    const nfts = await getAllNFTs()
+    for (let nft of nfts) {
+        const cid = nft.principal_id.toString()
+        const name = nft.name
+        const standard = nft.standard
+        const icon = nft.icon
+        const description = nft.description.substring(0, Math.min(1000, nft.description.length))
 
-    await db(tableName)
-        .insert({
-            canister_id: canisterId,
-            minter_principal: minterRes.toString(),
-            total_volume: statsRes[0],
-            highest_txn: statsRes[1],
-            lowest_txn: statsRes[2],
-            floor: statsRes[3],
-            listings: statsRes[4],
-            supply: statsRes[5],
-            total_txn_count: statsRes[6],
-        })
-        .onConflict('canister_id')
-        .ignore()
+        console.log("Inserting collection info: " + name + " canisterId: " + cid)
+        await db(tableName)
+            .insert({
+                canister_id: cid,
+                collection_name: name,
+                description: description,
+                standard: standard,
+                thumbnail: icon
+            })
+            .onConflict('canister_id')
+            .merge()
+        console.log("Finish inserting collection: " + name + " canisterId: " + cid)
+
+    }
+}
+
+const populateAllCollectionStats = async (tableName) => {
+    const rows = await db(tableName).select(['canister_id', 'collection_name'])
+    for (let row of rows) {
+        const canisterId = row['canister_id']
+        const name = row['collection_name']
+        const statsRes = await getStats(canisterId)
+        const minterRes = await getMinter(canisterId)
+
+        console.log("Inserting collection stats: " + name + " canisterId: " + canisterId)
+        await db(tableName)
+            .insert({
+                canister_id: canisterId,
+                minter_principal: minterRes,
+                total_volume: statsRes[0],
+                highest_txn: statsRes[1],
+                lowest_txn: statsRes[2],
+                floor: statsRes[3],
+                listings: statsRes[4],
+                supply: statsRes[5],
+                total_txn_count: statsRes[6],
+            })
+            .onConflict('canister_id')
+            .merge()
+    }
 }
 
 const getTokenIdentifier = (canisterId, tokenIndex) => {
@@ -101,6 +168,13 @@ const to32bits = num => {
     return Array.from(new Uint8Array(b));
 }
 
+const updateTable = async () => {
+    await db.schema.alterTable('collection', function (table) {
+        table.string('description', 1000)
+
+    })
+}
+
 const ensureSchema = async () => {
     const hasCollectionTable = await db.schema.hasTable('collection');
     if (!hasCollectionTable) {
@@ -115,6 +189,9 @@ const ensureSchema = async () => {
             table.bigint('floor');
             table.bigint('listings');
             table.bigint('supply');
+            table.string('description');
+            table.string('standard');
+            table.string('thumbnail');
         });
     }
 

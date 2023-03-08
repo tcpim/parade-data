@@ -8,7 +8,7 @@ const port = process.env.PORT || 8081;
 const isProd = process.env.environment == 'PROD';
 const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
-const { getRegistry } = require('./ic-connector.js')
+const { getRegistry, getAllNFTs } = require('./ic-connector.js')
 
 
 app.post("/insert", async (req, res) => {
@@ -36,6 +36,16 @@ app.get('/registry/:canisterId', async (req, res) => {
     res.json({ registry: resJson })
 })
 
+app.get('/getAllNFTs', async (req, res) => {
+    const nfts = await getAllNFTs()
+    var resJson = []
+    for (let nft of nfts) {
+        let nftJson = nft
+        nftJson.principal_id = nft.principal_id.toString()
+        resJson.push(nftJson)
+    }
+    res.json({ results: resJson })
+})
 
 const ensureSchema = async () => {
     const hasTable = await db.schema.hasTable('ts-test');
