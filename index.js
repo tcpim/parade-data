@@ -28,9 +28,6 @@ const canistersIds = [
 
 // Define main script
 const main = async () => {
-    //await populateAllCollections('collection')
-    await populateAllCollectionStats('collection')
-
     // if (isProd) {
     //     console.log(
     //         `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`

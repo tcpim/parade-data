@@ -79,7 +79,12 @@ const getRegistry = async (canisterId) => {
     }
 
     const actor = Actor.createActor(idlFactory, actorConfig)
-    const res = await actor.getRegistry()
+    let res = []
+    try {
+        res = await actor.getRegistry()
+    } catch (e) {
+        console.log("Failed to get registry for canister: " + canisterId)
+    }
     return res
 }
 
