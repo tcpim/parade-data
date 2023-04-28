@@ -1,7 +1,6 @@
 const { Actor, HttpAgent } = require('@dfinity/agent');
 const { idlFactory } = require('./candid/btcflower.did.js')
 const originalFetch = require('isomorphic-fetch')
-const { getAllNFTS } = require('@psychedelic/dab-js')
 
 const fetch = require('fetch-retry')(originalFetch, {
     retries: 3,
@@ -14,15 +13,15 @@ const httpAgent = new HttpAgent({
 })
 
 // getAllNFTs from DAB-js
-const getAllNFTs = async () => {
-    try {
-        const collections = await getAllNFTS({ agent: httpAgent })
-        return collections
-    } catch (e) {
-        console.error(e);
-        return
-    }
-}
+// const getAllNFTs = async () => {
+//     try {
+//         const collections = await getAllNFTS({ agent: httpAgent })
+//         return collections
+//     } catch (e) {
+//         console.error(e);
+//         return
+//     }
+// }
 
 // 'stats' EXT
 const getStats = async (canisterId) => {
@@ -106,5 +105,4 @@ module.exports = {
     getExtension,
     getRegistry,
     getTokens,
-    getAllNFTs
 }
