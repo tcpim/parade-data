@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "api": "node api-test.js"
+    "start": "node db/jobs.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +26,7 @@
     "isomorphic-fetch": "^3.0.0",
     "json-bigint": "^1.0.0",
     "knex": "^2.4.2",
-    "pg": "^8.9.0"
+    "pg": "^8.9.0",
+    "cors": "^2.8.5"
   }
 }
