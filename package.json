@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node db/jobs.js"
+    "start": "node jobs.js"
   },
   "repository": {
     "type": "git",

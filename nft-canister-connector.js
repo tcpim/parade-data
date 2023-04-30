@@ -1,5 +1,5 @@
 const { Actor, HttpAgent } = require('@dfinity/agent');
-const { idlFactory } = require('../candid/btcflower.did.js')
+const { idlFactory } = require('./candid/btcflower.did.js')
 const originalFetch = require('isomorphic-fetch')
 
 const fetch = require('fetch-retry')(originalFetch, {

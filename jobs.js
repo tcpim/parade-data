@@ -1,6 +1,6 @@
 'use strict';
 
-const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0, CLOUD_RUN_TASK_TOTAL = 0 } = process.env;
+const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0, CLOUD_RUN_TASK_COUNT = 10 } = process.env;
 const { getStats, getMinter, getRegistry } = require('./nft-canister-connector.js')
 const { Principal } = require('@dfinity/principal');
 const dbConnections = require("./db-config.js");
@@ -23,35 +23,35 @@ const canistersIds = [
     { cid: '4ggk4-mqaaa-aaaae-qad6q-cai', name: 'ICP Flower' },
     { cid: 'nbg4r-saaaa-aaaah-qap7a-cai', name: 'Starverse' },
     { cid: 'o6lzt-kiaaa-aaaag-qbdza-cai', name: 'PC Heads' },
-    { cid: '7cpyk-jyaaa-aaaag-qa5na-cai', name: 'BOX ON BLOCK' },
+    { cid: '7cpyk-jyaaa-aaaag-qa5na-cai', name: 'BOX ON BLOCK' }
 ]
 
 const getCanistersForTask = () => {
-    if (!isProd || CLOUD_RUN_TASK_TOTAL < 1) {
+    if (!isProd || CLOUD_RUN_TASK_COUNT < 1) {
         return canistersIds;
     }
 
-    const num = canistersIds.length;
-    const numCanistersPerTask = Math.ceil(num / CLOUD_RUN_TASK_TOTAL);
+    const len = canistersIds.length;
+    const numCanistersPerTask = Math.ceil(len / CLOUD_RUN_TASK_COUNT);
     const start = CLOUD_RUN_TASK_INDEX * numCanistersPerTask;
-    const end = start + numCanistersPerTask > num.length ? num.length : start + numCanistersPerTask;
-    return canistersIds.slice(start, end);
+    if (start >= len) {
+        return [];
+    }
+    const end = start + numCanistersPerTask > len ? len : start + numCanistersPerTask;
+
+    const cids = canistersIds.slice(start, end);
+    return cids;
 }
 // Define main script
 const main = async () => {
     await ensureSchema();
     const canistersForTask = getCanistersForTask();
-
     if (isProd) {
-        console.log(
-            `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
-        );
-
         try {
-            for (const canister in canistersForTask) {
-                console.log("Start collection table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+            for (const canister of canistersForTask) {
+                console.log("Start collection table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX + " for attempt: " + CLOUD_RUN_TASK_ATTEMPT)
                 await populateCollectionTable(canister, 'collection')
-                console.log("Start token_owner table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+                console.log("Start token_owner table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX + " for attempt: " + CLOUD_RUN_TASK_ATTEMPT)
                 await populateTokenOwnerTable(canister, 'collection_token', 'token_ownership')
             }
         } catch (err) {
@@ -130,7 +130,7 @@ const populateCollectionTable = async (canister, tableName) => {
             total_txn_count: statsRes[6],
         })
         .onConflict('canister_id')
-        .ignore()
+        .merge()
 }
 
 // const populateAllCollections = async (tableName) => {
@@ -158,31 +158,31 @@ const populateCollectionTable = async (canister, tableName) => {
 //     }
 // }
 
-const populateAllCollectionStats = async (tableName) => {
-    const rows = await db(tableName).select(['canister_id', 'collection_name'])
-    for (let row of rows) {
-        const canisterId = row['canister_id']
-        const name = row['collection_name']
-        const statsRes = await getStats(canisterId)
-        const minterRes = await getMinter(canisterId)
+// const populateAllCollectionStats = async (tableName) => {
+//     const rows = await db(tableName).select(['canister_id', 'collection_name'])
+//     for (let row of rows) {
+//         const canisterId = row['canister_id']
+//         const name = row['collection_name']
+//         const statsRes = await getStats(canisterId)
+//         const minterRes = await getMinter(canisterId)
 
-        console.log("Inserting collection stats: " + name + " canisterId: " + canisterId)
-        await db(tableName)
-            .insert({
-                canister_id: canisterId,
-                minter_principal: minterRes,
-                total_volume: statsRes[0],
-                highest_txn: statsRes[1],
-                lowest_txn: statsRes[2],
-                floor: statsRes[3],
-                listings: statsRes[4],
-                supply: statsRes[5],
-                total_txn_count: statsRes[6],
-            })
-            .onConflict('canister_id')
-            .merge()
-    }
-}
+//         console.log("Inserting collection stats: " + name + " canisterId: " + canisterId)
+//         await db(tableName)
+//             .insert({
+//                 canister_id: canisterId,
+//                 minter_principal: minterRes,
+//                 total_volume: statsRes[0],
+//                 highest_txn: statsRes[1],
+//                 lowest_txn: statsRes[2],
+//                 floor: statsRes[3],
+//                 listings: statsRes[4],
+//                 supply: statsRes[5],
+//                 total_txn_count: statsRes[6],
+//             })
+//             .onConflict('canister_id')
+//             .merge()
+//     }
+// }
 
 const getTokenIdentifier = (canisterId, tokenIndex) => {
     const padding = Buffer.from('\x0Atid');

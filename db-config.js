@@ -1,10 +1,8 @@
 // Update with your config settings.
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') }); // use absolute path for npm command to work
+require('dotenv').config({ path: path.join(__dirname, '.env') }); // use absolute path for npm command to work
 
 const knex = require('knex');
-
-console.log(`password: ${__dirname}`)
 
 const localDbConfig = {
   client: 'pg',
