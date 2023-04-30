@@ -12,18 +12,18 @@ const btcFlowerCanister = 'pk6rk-6aaaa-aaaae-qaazq-cai'
 // initiate an array of objects with name and address
 const canistersIds = [
     { cid: 'pk6rk-6aaaa-aaaae-qaazq-cai', name: 'BTC Flower' },
-    // { cid: '2tvxo-eqaaa-aaaai-acjla-cai', name: 'IC Dream Whale' },
-    // { cid: 'ugdkf-taaaa-aaaak-acoia-cai', name: 'ICP Flower' },
-    // { cid: 'skjpp-haaaa-aaaae-qac7q-cai', name: 'Pineapple Punks' },
-    // { cid: 'ahl3d-xqaaa-aaaaj-qacca-cai', name: 'ICTuts' },
-    // { cid: 'oeee4-qaaaa-aaaak-qaaeq-cai', name: 'Motoko Ghost' },
-    // { cid: 'bzsui-sqaaa-aaaah-qce2a-cai', name: 'Poked Bots' },
-    // { cid: 't2mog-myaaa-aaaal-aas7q-cai', name: 'pet bots' },
-    // { cid: 'e3izy-jiaaa-aaaah-qacbq-cai', name: 'Cronic Critters' },
-    // { cid: '4ggk4-mqaaa-aaaae-qad6q-cai', name: 'ICP Flower' },
-    // { cid: 'nbg4r-saaaa-aaaah-qap7a-cai', name: 'Starverse' },
-    // { cid: 'o6lzt-kiaaa-aaaag-qbdza-cai', name: 'PC Heads' },
-    // { cid: '7cpyk-jyaaa-aaaag-qa5na-cai', name: 'BOX ON BLOCK' },
+    { cid: '2tvxo-eqaaa-aaaai-acjla-cai', name: 'IC Dream Whale' },
+    { cid: 'ugdkf-taaaa-aaaak-acoia-cai', name: 'ICP Flower' },
+    { cid: 'skjpp-haaaa-aaaae-qac7q-cai', name: 'Pineapple Punks' },
+    { cid: 'ahl3d-xqaaa-aaaaj-qacca-cai', name: 'ICTuts' },
+    { cid: 'oeee4-qaaaa-aaaak-qaaeq-cai', name: 'Motoko Ghost' },
+    { cid: 'bzsui-sqaaa-aaaah-qce2a-cai', name: 'Poked Bots' },
+    { cid: 't2mog-myaaa-aaaal-aas7q-cai', name: 'pet bots' },
+    { cid: 'e3izy-jiaaa-aaaah-qacbq-cai', name: 'Cronic Critters' },
+    { cid: '4ggk4-mqaaa-aaaae-qad6q-cai', name: 'ICP Flower' },
+    { cid: 'nbg4r-saaaa-aaaah-qap7a-cai', name: 'Starverse' },
+    { cid: 'o6lzt-kiaaa-aaaag-qbdza-cai', name: 'PC Heads' },
+    { cid: '7cpyk-jyaaa-aaaag-qa5na-cai', name: 'BOX ON BLOCK' },
 ]
 
 const getCanistersForTask = () => {
