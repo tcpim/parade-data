@@ -1,6 +1,6 @@
 'use strict';
 
-const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0 } = process.env;
+const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0, CLOUD_RUN_TASK_TOTAL = 0 } = process.env;
 const { getStats, getMinter, getRegistry } = require('./nft-canister-connector.js')
 const { Principal } = require('@dfinity/principal');
 const dbConnections = require("./db-config.js");
@@ -9,26 +9,38 @@ const db = isProd ? dbConnections.prodDBCon : dbConnections.localDBCon;
 
 const btcFlowerCanister = 'pk6rk-6aaaa-aaaae-qaazq-cai'
 
-
+// initiate an array of objects with name and address
 const canistersIds = [
-    'pk6rk-6aaaa-aaaae-qaazq-cai',
-    '2tvxo-eqaaa-aaaai-acjla-cai',
-    'ugdkf-taaaa-aaaak-acoia-cai',
-    'skjpp-haaaa-aaaae-qac7q-cai',
-    'ahl3d-xqaaa-aaaaj-qacca-cai',
-    'oeee4-qaaaa-aaaak-qaaeq-cai',
-    'bzsui-sqaaa-aaaah-qce2a-cai',
-    't2mog-myaaa-aaaal-aas7q-cai',
-    'e3izy-jiaaa-aaaah-qacbq-cai',
-    '4ggk4-mqaaa-aaaae-qad6q-cai',
-    'nbg4r-saaaa-aaaah-qap7a-cai',
-    'o6lzt-kiaaa-aaaag-qbdza-cai',
-    '7cpyk-jyaaa-aaaag-qa5na-cai',
+    { cid: 'pk6rk-6aaaa-aaaae-qaazq-cai', name: 'BTC Flower' },
+    // { cid: '2tvxo-eqaaa-aaaai-acjla-cai', name: 'IC Dream Whale' },
+    // { cid: 'ugdkf-taaaa-aaaak-acoia-cai', name: 'ICP Flower' },
+    // { cid: 'skjpp-haaaa-aaaae-qac7q-cai', name: 'Pineapple Punks' },
+    // { cid: 'ahl3d-xqaaa-aaaaj-qacca-cai', name: 'ICTuts' },
+    // { cid: 'oeee4-qaaaa-aaaak-qaaeq-cai', name: 'Motoko Ghost' },
+    // { cid: 'bzsui-sqaaa-aaaah-qce2a-cai', name: 'Poked Bots' },
+    // { cid: 't2mog-myaaa-aaaal-aas7q-cai', name: 'pet bots' },
+    // { cid: 'e3izy-jiaaa-aaaah-qacbq-cai', name: 'Cronic Critters' },
+    // { cid: '4ggk4-mqaaa-aaaae-qad6q-cai', name: 'ICP Flower' },
+    // { cid: 'nbg4r-saaaa-aaaah-qap7a-cai', name: 'Starverse' },
+    // { cid: 'o6lzt-kiaaa-aaaag-qbdza-cai', name: 'PC Heads' },
+    // { cid: '7cpyk-jyaaa-aaaag-qa5na-cai', name: 'BOX ON BLOCK' },
 ]
 
+const getCanistersForTask = () => {
+    if (!isProd || CLOUD_RUN_TASK_TOTAL < 1) {
+        return canistersIds;
+    }
+
+    const num = canistersIds.length;
+    const numCanistersPerTask = Math.ceil(num / CLOUD_RUN_TASK_TOTAL);
+    const start = CLOUD_RUN_TASK_INDEX * numCanistersPerTask;
+    const end = start + numCanistersPerTask > num.length ? num.length : start + numCanistersPerTask;
+    return canistersIds.slice(start, end);
+}
 // Define main script
 const main = async () => {
     await ensureSchema();
+    const canistersForTask = getCanistersForTask();
 
     if (isProd) {
         console.log(
@@ -36,11 +48,12 @@ const main = async () => {
         );
 
         try {
-            const cid = canistersIds[CLOUD_RUN_TASK_INDEX]
-            console.log("Start collection table for canister: " + cid + " for task: " + CLOUD_RUN_TASK_INDEX)
-            await populateCollectionTable(cid, 'collection')
-            console.log("Start token_owner table for canister: " + cid + " for task: " + CLOUD_RUN_TASK_INDEX)
-            await populateTokenOwnerTable(cid, 'collection_token', 'token_ownership')
+            for (const canister in canistersForTask) {
+                console.log("Start collection table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+                await populateCollectionTable(canister, 'collection')
+                console.log("Start token_owner table for canister: " + canister.cid + " for task: " + CLOUD_RUN_TASK_INDEX)
+                await populateTokenOwnerTable(canister, 'collection_token', 'token_ownership')
+            }
         } catch (err) {
             console.log(`Error ${err}`);
             throw err;
@@ -48,12 +61,13 @@ const main = async () => {
 
         console.log(`Completed Task #${CLOUD_RUN_TASK_INDEX}.`);
     } else {
+        // Local development
         try {
-            for (let cid of canistersIds) {
-                console.log("Start collection table for canister: " + cid)
-                await populateCollectionTable(cid, 'collection')
-                console.log("Start token_owner table for canister: " + cid)
-                await populateTokenOwnerTable(cid, 'collection_token', 'token_ownership')
+            for (const canister of canistersForTask) {
+                console.log("Start collection table for canister: " + canister.cid)
+                await populateCollectionTable(canister, 'collection')
+                console.log("Start token_owner table for canister: " + canister.cid)
+                await populateTokenOwnerTable(canister, 'collection_token', 'token_ownership')
             }
         } catch (err) {
             console.log(`Error ${err}`);
@@ -64,21 +78,20 @@ const main = async () => {
 };
 
 
-const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOwnershipTable) => {
-    const registryRes = await getRegistry(canisterId)
+const populateTokenOwnerTable = async (canister, collectionTokenTable, tokenOwnershipTable) => {
+    const registryRes = await getRegistry(canister.cid)
     for (let tokenOwner of registryRes) {
         const tokenIndex = tokenOwner[0];
         const ownerAccount = tokenOwner[1];
-        if (ownerAccount == '0000') console.log(`owneraccount: ${ownerAccount}`)
-        const tokenIdentifier = getTokenIdentifier(canisterId, tokenIndex)
-        const fullSizeImageUrl = "https://" + canisterId + ".raw.ic0.app/?tokenid=" + tokenIdentifier;
-        const smallSizeImageUrl = canisterId == btcFlowerCanister ?
+        const tokenIdentifier = getTokenIdentifier(canister.cid, tokenIndex)
+        const fullSizeImageUrl = "https://" + canister.cid + ".raw.ic0.app/?tokenid=" + tokenIdentifier;
+        const smallSizeImageUrl = canister.cid == btcFlowerCanister ?
             "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + tokenIdentifier : fullSizeImageUrl + '&type=thumbnail'
 
 
         await db(collectionTokenTable)
             .insert({
-                canister_id: canisterId,
+                canister_id: canister.cid,
                 token_index: tokenIndex,
                 token_identifier: tokenIdentifier,
                 original_image_url: fullSizeImageUrl,
@@ -90,7 +103,7 @@ const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOw
         await db(tokenOwnershipTable)
             .insert({
                 owner_account: ownerAccount,
-                canister_id: canisterId,
+                canister_id: canister.cid,
                 token_index: tokenIndex
             })
             .onConflict(['owner_account', 'canister_id', 'token_index'])
@@ -99,13 +112,14 @@ const populateTokenOwnerTable = async (canisterId, collectionTokenTable, tokenOw
 }
 
 
-const populateCollectionTable = async (canisterId, tableName) => {
-    const statsRes = await getStats(canisterId)
-    const minterRes = await getMinter(canisterId)
+const populateCollectionTable = async (canister, tableName) => {
+    const statsRes = await getStats(canister.cid)
+    const minterRes = await getMinter(canister.cid)
 
     await db(tableName)
         .insert({
-            canister_id: canisterId,
+            canister_id: canister.cid,
+            collection_name: canister.name,
             minter_principal: minterRes.toString(),
             total_volume: statsRes[0],
             highest_txn: statsRes[1],
