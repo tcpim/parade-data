@@ -1,0 +1,72 @@
+{
+    "clubs": [
+        {
+            "id": "ludo-arts",
+            "name": "Ludo Flowers",
+            "twitter": "https://twitter.com/btcflower",
+            "discord": "https://discord.com/channels/897536129803378758",
+            "nft_collections": [
+                {
+                    "canister_id": "pk6rk-6aaaa-aaaae-qaazq-cai",
+                    "name": "BTC Flower"
+                },
+                {
+                    "canister_id": "dhiaa-ryaaa-aaaae-qabva-cai",
+                    "name": "ETH Flower"
+                },
+                {
+                    "canister_id": "4ggk4-mqaaa-aaaae-qad6q-cai",
+                    "name": "ICP Flower"
+                },
+                {
+                    "canister_id": "skjpp-haaaa-aaaae-qac7q-cai",
+                    "name": "Pineapple Punks"
+                },
+                {
+                    "canister_id": "skjpp-haaaa-aaaae-qac7q-cai",
+                    "name": "Pineapple Punks"
+                },
+                {
+                    "canister_id": "2v5zm-uaaaa-aaaae-qaewa-cai",
+                    "name": "Clown Skateboards"
+                }
+            ]
+        },
+        {
+            "id": "poked-bots",
+            "name": "Poked Bots",
+            "twitter": "https://twitter.com/pokedstudiouk",
+            "discord": "https://discord.com/channels/886922354209472522/",
+            "nft_collections": [
+                {
+                    "canister_id": "bzsui-sqaaa-aaaah-qce2a-cai",
+                    "name": "Poked Bots"
+                },
+                {
+                    "canister_id": "t2mog-myaaa-aaaal-aas7q-cai",
+                    "name": "Pet Bots"
+                },
+                {
+                    "canister_id": "jv55j-riaaa-aaaal-abvnq-cai",
+                    "//name": "Poked Bots Mutant Army"
+                }
+            ]
+        },
+        {
+            "id": "motoko-ghost",
+            "name": "Motoko Ghosts",
+            "twitter": "",
+            "discord": "",
+            "nft_collections": [
+                {
+                    "canister_id": "oeee4-qaaaa-aaaak-qaaeq-cai",
+                    "name": "Motoko Ghosts"
+                },
+                {
+                    "canister_id": "ugdkf-taaaa-aaaak-acoia-cai",
+                    "name": "Motoko Mechs"
+                }
+            ]
+        }
+    ]
+}
