@@ -1,7 +1,7 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
-import { idlFactory } from "./candid-idl/btcflower.did.js";
-import originalFetch from "isomorphic-fetch";
 import fetchRetry from "fetch-retry";
+import originalFetch from "isomorphic-fetch";
+import { idlFactory } from "./candid/btcflower.did.js";
 
 const fetch = fetchRetry(originalFetch, {
   retries: 3,
@@ -32,25 +32,26 @@ export const getStats = async (canisterId) => {
   return statsRes;
 };
 
-// 'getMinter' EXT
-export const getMinter = async (canisterId) => {
-  const actorConfig = {
-    canisterId,
-    agent: httpAgent,
-  };
+// // 'getMinter' EXT
+// export const getMinter = async (canisterId) => {
+//   const actorConfig = {
+//     canisterId,
+//     agent: httpAgent,
+//   };
 
-  const actor = Actor.createActor(idlFactory, actorConfig);
-  let minterRes = "";
-  try {
-    minterRes = await actor.getMinter();
-  } catch (e) {
-    console.error(
-      "Failed to fetch minter for canister: " + canisterId + " error: " + e
-    );
-  }
+//   const actor = Actor.createActor(idlFactory, actorConfig);
+//   let minterRes = "";
+//   try {
+//     minterRes = await actor.getMinter();
+//   } catch (e) {
+//     console.error(
+//       "Failed to fetch minter for canister: " + canisterId + " error: " + e
+//     );
+//   }
 
-  return minterRes.toString();
-};
+//   console.log(`Minter for ${canisterId} is ${minterRes.toString()}`);
+//   return minterRes.toString();
+// };
 
 // 'getRegistry' EXT
 export const getRegistry = async (canisterId) => {

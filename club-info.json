@@ -8,27 +8,39 @@
       "nft_collections": [
         {
           "canister_id": "pk6rk-6aaaa-aaaae-qaazq-cai",
-          "name": "BTC Flower"
+          "name": "BTC Flower",
+          "image_height_width_ratio": 1.4145,
+          "image_type": "svg"
         },
         {
           "canister_id": "dhiaa-ryaaa-aaaae-qabva-cai",
-          "name": "ETH Flower"
+          "name": "ETH Flower",
+          "image_height_width_ratio": 1.4145,
+          "image_type": "svg"
         },
         {
           "canister_id": "4ggk4-mqaaa-aaaae-qad6q-cai",
-          "name": "ICP Flower"
+          "name": "ICP Flower",
+          "image_height_width_ratio": 1.4145,
+          "image_type": "svg"
         },
         {
           "canister_id": "skjpp-haaaa-aaaae-qac7q-cai",
-          "name": "Pineapple Punks"
-        },
-        {
-          "canister_id": "skjpp-haaaa-aaaae-qac7q-cai",
-          "name": "Pineapple Punks"
+          "name": "Pineapple Punks",
+          "image_height_width_ratio": 1.0,
+          "image_type": "svg"
         },
         {
           "canister_id": "2v5zm-uaaaa-aaaae-qaewa-cai",
-          "name": "Clown Skateboards"
+          "name": "Clown Skateboards",
+          "image_height_width_ratio": 1.0,
+          "image_type": "svg"
+        },
+        {
+          "canister_id": "y2ga5-lyaaa-aaaae-qae2q-cai",
+          "name": "Cherries",
+          "image_height_width_ratio": 1.0,
+          "image_type": "svg"
         }
       ]
     },
@@ -40,15 +52,15 @@
       "nft_collections": [
         {
           "canister_id": "bzsui-sqaaa-aaaah-qce2a-cai",
-          "name": "Poked Bots"
-        },
-        {
-          "canister_id": "t2mog-myaaa-aaaal-aas7q-cai",
-          "name": "Pet Bots"
+          "name": "Poked Bots",
+          "image_height_width_ratio": 1.415,
+          "image_type": "img"
         },
         {
           "canister_id": "jv55j-riaaa-aaaal-abvnq-cai",
-          "name": "Poked Bots Mutant Army"
+          "name": "Poked Bots Mutant Army",
+          "image_height_width_ratio": 1.415,
+          "image_type": "img"
         }
       ]
     },
@@ -60,11 +72,15 @@
       "nft_collections": [
         {
           "canister_id": "oeee4-qaaaa-aaaak-qaaeq-cai",
-          "name": "Motoko Ghosts"
+          "name": "Motoko Ghosts",
+          "image_height_width_ratio": 0.838,
+          "image_type": "img"
         },
         {
           "canister_id": "ugdkf-taaaa-aaaak-acoia-cai",
-          "name": "Motoko Mechs"
+          "name": "Motoko Mechs",
+          "image_height_width_ratio": 1.429,
+          "image_type": "svg"
         }
       ]
     }

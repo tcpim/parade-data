@@ -1,4 +1,4 @@
-import { prodDbCon, localDbCon } from "./db-config.js";
+import { localDbCon, prodDbCon } from "./db-config.js";
 
 const isProd = process.env.environment == "PROD";
 const db = isProd ? prodDbCon : localDbCon;
@@ -10,23 +10,13 @@ export const ensureSchema = async () => {
       table.string("club_id");
       table.string("canister_id");
       table.string("club_name");
-      table.string("owner_principal");
+      table.string("collection_name");
+      table.string("minter_principal");
       table.string("royalty_account");
-      table.string("description");
       table.string("icon_url");
       table.string("twitter");
       table.string("discord");
       table.string("website");
-      table.primary(["club_id", "canister_id"]);
-    });
-  }
-
-  const hasCollectionTable = await db.schema.hasTable("collection");
-  if (!hasCollectionTable) {
-    await db.schema.createTable("collection", (table) => {
-      table.string("canister_id").primary();
-      table.string("collection_name");
-      table.string("minter_principal");
       table.bigint("total_volume");
       table.bigint("highest_txn");
       table.bigint("lowest_txn");
@@ -37,6 +27,9 @@ export const ensureSchema = async () => {
       table.string("description");
       table.string("standard");
       table.string("thumbnail");
+      table.string("image_type");
+      table.double("image_height_width_ratio");
+      table.primary(["club_id", "canister_id"]);
     });
   }
 
@@ -46,7 +39,8 @@ export const ensureSchema = async () => {
       table.string("canister_id");
       table.integer("token_index");
       table.string("token_identifier");
-      table.string("original_image_url");
+      table.string("image_url");
+      table.string("image_url_onchain");
       table.string("thum_image_url");
       table.double("nri");
       table.json("attributes");

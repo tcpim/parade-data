@@ -1,7 +1,7 @@
-import { getStats, getMinter, getRegistry } from "../nft-canister-connector.js";
-import { getTokenIdentifier, getCollections } from "../helpers.js";
 import fs from "fs";
-import { prodDbCon, localDbCon } from "./db-config.js";
+import { getRegistry, getStats } from "../canisters/nft-canister-connector.js";
+import { getCollections, getTokenIdentifier } from "../helpers.js";
+import { localDbCon, prodDbCon } from "./db-config.js";
 
 const isProd = process.env.environment === "PROD";
 const db = isProd ? prodDbCon : localDbCon;
@@ -9,16 +9,38 @@ const clubInfoJsonFile = "./club-info.json";
 
 export const populateClubCollectionTable = async () => {
   const jsonData = JSON.parse(fs.readFileSync(clubInfoJsonFile, "utf-8"));
-  // Note! need to use for...of because forEach/map doesn't work with async/await
   for (const club of jsonData.clubs) {
     for (const collection of club.nft_collections) {
+      console.log(
+        "pupulating club_collection table...for: " +
+          club.name +
+          " " +
+          collection.name
+      );
+
+      const statsRes = await getStats(collection.canister_id);
+
       await db("club_collection")
         .insert({
           club_id: club.id,
           canister_id: collection.canister_id,
           club_name: club.name,
+          collection_name: collection.name,
+
+          royalty_account: "",
+          icon_url: "",
           twitter: club.twitter,
           discord: club.discord,
+          website: "",
+          total_volume: statsRes[0],
+          highest_txn: statsRes[1],
+          lowest_txn: statsRes[2],
+          total_txn_count: statsRes[6],
+          floor: statsRes[3],
+          listings: statsRes[4],
+          supply: statsRes[5],
+          image_height_width_ratio: collection.image_height_width_ratio,
+          image_type: collection.image_type,
         })
         .onConflict(["club_id", "canister_id"]) // assuming the combination of club_id and canister_id is unique
         .merge();
@@ -26,42 +48,9 @@ export const populateClubCollectionTable = async () => {
   }
 };
 
-// Find all canister ids from the club-info.json file
-// Get stats and infos from the canisters
-// Populate the "collection" table
-export const populateCollectionTable = async () => {
-  const collections = getCollections(clubInfoJsonFile);
-
-  // Note! need to use for...of because forEach/map doesn't work with async/await
-  for (const collection of collections) {
-    const statsRes = await getStats(collection.canister_id);
-    const minterRes = await getMinter(collection.canister_id);
-
-    console.log("pupulating collection table...for: " + collection.name);
-
-    await db("collection")
-      .insert({
-        canister_id: collection.canister_id,
-        collection_name: collection.name,
-        minter_principal: minterRes.toString(),
-        total_volume: statsRes[0],
-        highest_txn: statsRes[1],
-        lowest_txn: statsRes[2],
-        floor: statsRes[3],
-        listings: statsRes[4],
-        supply: statsRes[5],
-        total_txn_count: statsRes[6],
-      })
-      .onConflict("canister_id")
-      .merge();
-  }
-};
-
-// Populate the "collection_token" table and "token_ownership" table
 export const populateTokenOwnerTable = async () => {
   const collections = getCollections(clubInfoJsonFile);
 
-  // Note! need to use for...of because forEach/map doesn't work with async/await
   for (const collection of collections) {
     const registryRes = await getRegistry(collection.canister_id);
     console.log(
@@ -79,7 +68,7 @@ export const populateTokenOwnerTable = async () => {
       const fullSizeImageUrl =
         "https://" +
         collection.canister_id +
-        ".raw.ic0.app/?tokenid=" +
+        ".raw.icp0.io/?tokenid=" +
         tokenIdentifier;
       const smallSizeImageUrl = fullSizeImageUrl + "&type=thumbnail";
 
@@ -88,7 +77,8 @@ export const populateTokenOwnerTable = async () => {
           canister_id: collection.canister_id,
           token_index: tokenIndex,
           token_identifier: tokenIdentifier,
-          original_image_url: fullSizeImageUrl,
+          image_url: fullSizeImageUrl,
+          image_url_onchain: fullSizeImageUrl,
           thum_image_url: smallSizeImageUrl,
         })
         .onConflict(["canister_id", "token_index"])
