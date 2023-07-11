@@ -1,12 +1,16 @@
 "use strict";
 
-import { populateClubCollectionTable } from "./db/db-population.js";
+import {
+  populateClubCollectionTable,
+  populateTokenOwnerTable,
+} from "./db/db-population";
+import { ensureSchema } from "./db/table_init";
 
 // TODO: for each Cloud task, deal with each club
 const main = async () => {
-  // await ensureSchema();
+  await ensureSchema();
   await populateClubCollectionTable();
-  //await populateTokenOwnerTable();
+  await populateTokenOwnerTable();
 
   process.exit(0);
 };
