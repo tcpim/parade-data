@@ -1,14 +1,13 @@
-import {
-  populateClubCollectionTable,
-  populateTokenOwnerTable,
-} from "./db/db-population.js";
+import { populateClubCollectionTable } from "./db/db-population.js";
 import { ensureSchema } from "./db/table_init.js";
 
 // TODO: for each Cloud task, deal with each club
 const main = async () => {
   await ensureSchema();
   await populateClubCollectionTable();
-  await populateTokenOwnerTable();
+  // await populateCollectionTokenTable();
+  // await populateTokenOwnerTable();
+  // await generatePokedBotsImgUrl();
 
   process.exit(0);
 };

@@ -10,37 +10,50 @@
           "canister_id": "pk6rk-6aaaa-aaaae-qaazq-cai",
           "name": "BTC Flower",
           "image_height_width_ratio": 1.4145,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 1
         },
         {
           "canister_id": "dhiaa-ryaaa-aaaae-qabva-cai",
           "name": "ETH Flower",
           "image_height_width_ratio": 1.4145,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 2
         },
         {
           "canister_id": "4ggk4-mqaaa-aaaae-qad6q-cai",
           "name": "ICP Flower",
           "image_height_width_ratio": 1.4145,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 3
         },
         {
           "canister_id": "skjpp-haaaa-aaaae-qac7q-cai",
           "name": "Pineapple Punks",
           "image_height_width_ratio": 1.0,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 4
         },
         {
           "canister_id": "2v5zm-uaaaa-aaaae-qaewa-cai",
           "name": "Clown Skateboards",
           "image_height_width_ratio": 1.0,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 5
         },
         {
           "canister_id": "y2ga5-lyaaa-aaaae-qae2q-cai",
           "name": "Cherries",
           "image_height_width_ratio": 1.0,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 6
+        },
+        {
+          "canister_id": "t3drq-7iaaa-aaaae-qac2a-cai",
+          "name": "FPDAO Flower",
+          "image_height_width_ratio": 1.4147,
+          "image_type": "img",
+          "rank": 7
         }
       ]
     },
@@ -54,13 +67,15 @@
           "canister_id": "bzsui-sqaaa-aaaah-qce2a-cai",
           "name": "Poked Bots",
           "image_height_width_ratio": 1.415,
-          "image_type": "img"
+          "image_type": "img",
+          "rank": 1
         },
         {
           "canister_id": "jv55j-riaaa-aaaal-abvnq-cai",
           "name": "Poked Bots Mutant Army",
           "image_height_width_ratio": 1.415,
-          "image_type": "img"
+          "image_type": "img",
+          "rank": 2
         }
       ]
     },
@@ -74,13 +89,15 @@
           "canister_id": "oeee4-qaaaa-aaaak-qaaeq-cai",
           "name": "Motoko Ghosts",
           "image_height_width_ratio": 0.838,
-          "image_type": "img"
+          "image_type": "img",
+          "rank": 1
         },
         {
           "canister_id": "ugdkf-taaaa-aaaak-acoia-cai",
           "name": "Motoko Mechs",
           "image_height_width_ratio": 1.429,
-          "image_type": "svg"
+          "image_type": "svg",
+          "rank": 2
         }
       ]
     }

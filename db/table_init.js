@@ -11,6 +11,7 @@ export const ensureSchema = async () => {
       table.string("canister_id");
       table.string("club_name");
       table.string("collection_name");
+      table.integer("collection_rank");
       table.string("minter_principal");
       table.string("royalty_account");
       table.string("icon_url");
