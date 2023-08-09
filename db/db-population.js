@@ -109,7 +109,7 @@ export const populateTokenOwnerTable = async () => {
           token_index: tokenIndex,
         })
         .onConflict(["owner_account", "canister_id", "token_index"])
-        .merge();
+        .ignore();
     }
   }
 };
