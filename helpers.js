@@ -30,3 +30,20 @@ export const getCollections = (file) => {
   });
   return collections;
 };
+
+export const getCollectionsForClub = (file, club_id) => {
+  const jsonData = JSON.parse(fs.readFileSync(file, "utf-8"));
+  let collections = [];
+  jsonData.clubs
+    .filter((club) => club.id === club_id)
+    .forEach((club) => {
+      club.nft_collections.forEach((collection) => {
+        collections.push({
+          canister_id: collection.canister_id,
+          name: collection.name,
+          need_extract_image: collection.need_extract_image,
+        });
+      });
+    });
+  return collections;
+};

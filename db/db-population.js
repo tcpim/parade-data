@@ -1,9 +1,8 @@
-import axios from "axios";
 import fs from "fs";
-import { JSDOM } from "jsdom";
 import { getRegistry, getStats } from "../canisters/nft-canister-connector.js";
 import { getCollections, getTokenIdentifier } from "../helpers.js";
 import { localDbCon, prodDbCon } from "./db-config.js";
+import { getImageUrlFromSvgHtml } from "./onetime-job.js";
 
 const isProd = process.env.environment === "PROD";
 const db = isProd ? prodDbCon : localDbCon;
@@ -97,9 +96,6 @@ export const populateTokenOwnerTable = async () => {
   const collections = getCollections(clubInfoJsonFile);
 
   for (const collection of collections) {
-    if (collection.canister_id !== "t3drq-7iaaa-aaaae-qac2a-cai") {
-      continue;
-    }
     const registryRes = await getRegistry(collection.canister_id);
     console.log("pupulating token_ownership table...for: " + collection.name);
 
@@ -115,48 +111,5 @@ export const populateTokenOwnerTable = async () => {
         .onConflict(["owner_account", "canister_id", "token_index"])
         .merge();
     }
-  }
-};
-
-const getImageUrlFromSvgHtml = async (url) => {
-  const response = await axios.get(url);
-  const html = response.data;
-
-  const dom = new JSDOM(html);
-  const image = dom.window.document.querySelector("image");
-  return image?.getAttribute("href") || "";
-};
-
-export const generatePokedBotsImgUrl = async () => {
-  const pokedbotsCanister = "bzsui-sqaaa-aaaah-qce2a-cai";
-  const registryRes = await getRegistry(pokedbotsCanister);
-  for (let tokenOwner of registryRes) {
-    const tokenIndex = tokenOwner[0];
-    const tokenIdentifier = getTokenIdentifier(pokedbotsCanister, tokenIndex);
-    const onChainImageUrl =
-      "https://" +
-      pokedbotsCanister +
-      ".raw.icp0.io/?tokenid=" +
-      tokenIdentifier;
-    const smallSizeImageUrl = onChainImageUrl + "&type=thumbnail";
-
-    // special case for poked bots canister
-    const imageUrl = await getImageUrlFromSvgHtml(onChainImageUrl);
-
-    await db("collection_token")
-      .insert({
-        canister_id: pokedbotsCanister,
-        token_index: tokenIndex,
-        token_identifier: tokenIdentifier,
-        image_url: imageUrl,
-        image_url_onchain: onChainImageUrl,
-        thum_image_url: smallSizeImageUrl,
-      })
-      .onConflict(["canister_id", "token_index"])
-      .merge();
-
-    console.log(
-      "upadted token: " + tokenIndex + " with image url: " + imageUrl
-    );
   }
 };

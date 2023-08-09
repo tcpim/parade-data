@@ -68,14 +68,16 @@
           "name": "Poked Bots",
           "image_height_width_ratio": 1.415,
           "image_type": "img",
-          "rank": 1
+          "rank": 1,
+          "need_extract_image": true
         },
         {
           "canister_id": "jv55j-riaaa-aaaal-abvnq-cai",
           "name": "Poked Bots Mutant Army",
           "image_height_width_ratio": 1.415,
           "image_type": "img",
-          "rank": 2
+          "rank": 2,
+          "need_extract_image": false
         }
       ]
     },
@@ -90,14 +92,122 @@
           "name": "Motoko Ghosts",
           "image_height_width_ratio": 0.838,
           "image_type": "img",
-          "rank": 1
+          "rank": 1,
+          "need_extract_image": false
         },
         {
           "canister_id": "ugdkf-taaaa-aaaak-acoia-cai",
           "name": "Motoko Mechs",
           "image_height_width_ratio": 1.429,
           "image_type": "svg",
-          "rank": 2
+          "rank": 2,
+          "need_extract_image": false
+        }
+      ]
+    },
+    {
+      "id": "boxy-dude",
+      "name": "Boxy Dude",
+      "twitter": "https://twitter.com/icboxy",
+      "discord": "",
+      "nft_collections": [
+        {
+          "canister_id": "s36wu-5qaaa-aaaah-qcyzq-cai",
+          "name": "Boxy Dude",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 1,
+          "need_extract_image": true
+        },
+        {
+          "canister_id": "cchps-gaaaa-aaaak-qasaa-cai",
+          "name": "Boxy Girl",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 2,
+          "need_extract_image": true
+        }
+      ]
+    },
+    {
+      "id": "dscvr-airdrop",
+      "name": "DSCVR Airdrop",
+      "twitter": "",
+      "discord": "",
+      "nft_collections": [
+        {
+          "canister_id": "rw623-hyaaa-aaaah-qctcq-cai",
+          "name": "OG MEDALS",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 1,
+          "need_extract_image": false
+        },
+        {
+          "canister_id": "nbg4r-saaaa-aaaah-qap7a-cai",
+          "name": "Starverse",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 2,
+          "need_extract_image": false
+        }
+      ]
+    },
+    {
+      "id": "cubetopia",
+      "name": "Cubetopia",
+      "twitter": "https://twitter.com/TheCubetopia",
+      "discord": "",
+      "nft_collections": [
+        {
+          "canister_id": "3vdxu-laaaa-aaaah-abqxa-cai",
+          "name": "Cubetopia Islands",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 1,
+          "need_extract_image": true
+        },
+        {
+          "canister_id": "umqto-nyaaa-aaaah-abwoa-cai",
+          "name": "Cubetopia Pets",
+          "image_height_width_ratio": 1.0,
+          "image_type": "svg",
+          "rank": 2,
+          "need_extract_image": false
+        },
+        {
+          "canister_id": "bvckr-laaaa-aaaak-acgkq-cai",
+          "name": "Cubetopia Founder’s Pass",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 3,
+          "need_extract_image": false
+        }
+      ]
+    },
+    {
+      "id": "ic-punks",
+      "name": "IC Punks",
+      "twitter": "https://twitter.com/GigaverseLabs",
+      "discord": "",
+      "nft_collections": [
+        {
+          "canister_id": "bxdf4-baaaa-aaaah-qaruq-cai",
+          "name": "Wrapped IC Punks",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 1,
+          "need_extract_image": true,
+          "//": "customized url based on https://cache.icpunks.com/icpunks//Token/12"
+        },
+        {
+          "canister_id": "y3b7h-siaaa-aaaah-qcnwa-cai",
+          "name": "Wrapped IC Cats",
+          "image_height_width_ratio": 1.0,
+          "image_type": "img",
+          "rank": 2,
+          "need_extract_image": true,
+          "//": "customized url based on https://cache.icpunks.com/icats//Token/1330"
         }
       ]
     }

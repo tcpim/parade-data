@@ -1,12 +1,32 @@
-import { populateClubCollectionTable } from "./db/db-population.js";
-import { ensureSchema } from "./db/table_init.js";
+import { populateTokenOwnerTable } from "./db/db-population.js";
+// import { addCollectionToClub } from "./db/onetime-job.js";
+
+// const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_COUNT = 0 } = process.env;
+// const isProd = process.env.environment === "PROD";
 
 // TODO: for each Cloud task, deal with each club
 const main = async () => {
-  await ensureSchema();
-  await populateClubCollectionTable();
+  // if (isProd) {
+  //   // one time job to add new clubs
+  //   if (CLOUD_RUN_TASK_COUNT != "1") {
+  //     console.log(
+  //       "CLOUD_RUN_TASK_INDEX is not 1, skipping. It is: " +
+  //         CLOUD_RUN_TASK_COUNT
+  //     );
+  //     process.exit(1);
+  //   }
+
+  //   const clubs = ["boxy-dude"];
+  //   await addCollectionToClub(clubs[parseInt(CLOUD_RUN_TASK_INDEX)]);
+  // }
+
+  // const clubs = ["boxy-dude"];
+  // await addCollectionToClub(clubs[0]);
+
+  // await ensureSchema();
+  // await populateClubCollectionTable();
   // await populateCollectionTokenTable();
-  // await populateTokenOwnerTable();
+  await populateTokenOwnerTable();
   // await generatePokedBotsImgUrl();
 
   process.exit(0);
