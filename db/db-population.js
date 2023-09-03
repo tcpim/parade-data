@@ -92,6 +92,32 @@ export const populateCollectionTokenTable = async () => {
   }
 };
 
+export const populateTokenOwnerTableWithTask = async (task_index) => {
+  const collections = getCollections(clubInfoJsonFile);
+
+  for (let i = 0; i < collections.length; i++) {
+    if (i != task_index) {
+      continue;
+    }
+    const collection = collections[i];
+    const registryRes = await getRegistry(collection.canister_id);
+    console.log("pupulating token_ownership table...for: " + collection.name);
+
+    for (let tokenOwner of registryRes) {
+      const tokenIndex = tokenOwner[0];
+      const ownerAccount = tokenOwner[1];
+      await db("token_ownership")
+        .insert({
+          owner_account: ownerAccount,
+          canister_id: collection.canister_id,
+          token_index: tokenIndex,
+        })
+        .onConflict(["owner_account", "canister_id", "token_index"])
+        .ignore();
+    }
+  }
+};
+
 export const populateTokenOwnerTable = async () => {
   const collections = getCollections(clubInfoJsonFile);
 

@@ -1,8 +1,8 @@
-import { populateTokenOwnerTable } from "./db/db-population.js";
+import { populateTokenOwnerTableWithTask } from "./db/db-population.js";
 // import { addCollectionToClub } from "./db/onetime-job.js";
 
-// const { CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_COUNT = 0 } = process.env;
-// const isProd = process.env.environment === "PROD";
+const { CLOUD_RUN_TASK_INDEX = 0 } = process.env;
+const isProd = process.env.environment === "PROD";
 
 // TODO: for each Cloud task, deal with each club
 const main = async () => {
@@ -26,9 +26,12 @@ const main = async () => {
   // await ensureSchema();
   // await populateClubCollectionTable();
   // await populateCollectionTokenTable();
-  await populateTokenOwnerTable();
+  // await populateTokenOwnerTable();
   // await generatePokedBotsImgUrl();
 
+  if (isProd) {
+    await populateTokenOwnerTableWithTask(CLOUD_RUN_TASK_INDEX);
+  }
   process.exit(0);
 };
 
